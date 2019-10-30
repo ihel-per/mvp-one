@@ -118,7 +118,7 @@ jhipster:
   #     allow-credentials: true
   #     max-age: 1800
   mail:
-    from: imvp@localhost
+    from: ihel.per@mail.ru
   swagger:
     default-include-pattern: /api/.*
     title: imvp API
