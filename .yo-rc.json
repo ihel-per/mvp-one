@@ -1,0 +1,39 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.imvp.demo"
+    },
+    "jhipsterVersion": "6.4.1",
+    "applicationType": "monolith",
+    "baseName": "imvp",
+    "packageName": "com.imvp.demo",
+    "packageFolder": "com/imvp/demo",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "no",
+    "enableHibernateCache": false,
+    "websocket": "spring-websocket",
+    "databaseType": "mongodb",
+    "devDatabaseType": "mongodb",
+    "prodDatabaseType": "mongodb",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "gradle",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "OWM2NGJlZDQ5NjIxYzkyODM0YTg1NWYzNmY4MzMwZmM5ZmFiYjI2ODRkYmNlZDhjNzhmYWJjZjdkZjk5ZjUzNjE3ZWY4ZjY5MDBkMjU2ZWUwZDM1YTQ2ODViNGY4ZjkyYTFjZjRiNzUwZmI0YjRlZGY2YWE1MDUxMjAxNGEzNGE=",
+    "embeddableLaunchScript": false,
+    "useSass": true,
+    "clientPackageManager": "npm",
+    "clientFramework": "react",
+    "clientTheme": "darkly",
+    "clientThemeVariant": "dark",
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": false,
+    "blueprints": []
+  }
+}

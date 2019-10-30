@@ -1,0 +1,16 @@
+version: '2'
+services:
+  imvp-mongodb:
+    image: mongo:4.0.12
+    ports:
+      - '27017:27017'
+    command: mongos --configdb imvp-mongodb-config
+  imvp-mongodb-node:
+    build:
+      context: .
+      dockerfile: mongodb/MongoDB.Dockerfile
+    command: mongod --replSet rs1 --noprealloc --smallfiles
+  imvp-mongodb-config:
+    image: mongo:4.0.12
+    container_name: imvp-mongodb-config
+    command: mongod --noprealloc --smallfiles --configsvr --dbpath /data/db
