@@ -10,7 +10,7 @@ services:
       - SPRING_DATA_MONGODB_DATABASE=imvp
       - JHIPSTER_SLEEP=30 # gives time for other services to boot before the application
     ports:
-      - 8080:8080
+      - 8081:8081
   imvp-mongodb:
     extends:
       file: mongodb.yml
