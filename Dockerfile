@@ -1,7 +1,8 @@
 FROM openjdk:11-slim as runtime
 VOLUME /tmp
 COPY /build/libs/imvp.jar app.jar
-COPY ./package.json package.json
+COPY package*.json ./
+COPY . .
 RUN apt-get update
 RUN apt-get -y install curl gnupg
 RUN curl -sL https://deb.nodesource.com/setup_11.x  | bash -
