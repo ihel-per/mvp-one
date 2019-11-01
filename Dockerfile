@@ -7,4 +7,5 @@ RUN apt-get -y install curl gnupg
 RUN curl -sL https://deb.nodesource.com/setup_11.x  | bash -
 RUN apt-get -y install nodejs
 RUN npm install
+RUN npm run cleanup && npm run webpack:prod:main
 ENTRYPOINT java -jar app.jar
