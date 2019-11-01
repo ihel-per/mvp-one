@@ -29,7 +29,7 @@ plugins {
 }
 
 group = "com.imvp.demo"
-version = "0.0.1-SNAPSHOT"
+//version = "0.0.1-SNAPSHOT"
 
 description = ""
 
