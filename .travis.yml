@@ -39,7 +39,7 @@ install:
 script:
   - chmod +x gradlew
   - ./gradlew clean test integrationTest
-  - ./gradlew npm_run_test-ci -PnodeInstall --no-daemon
+  #  - ./gradlew npm_run_test-ci -PnodeInstall --no-daemon
   - ./gradlew bootJar -Pprod -x test
 #  - ./gradlew -Pprod bootJar jib
 notifications:
@@ -48,5 +48,5 @@ notifications:
     on_failure: always # options: [always|never|change] default: always
     on_start: false # default: false
 after_success:
-  #  - sh .travis/deploy_dockerhub.sh
+  - sh .travis/deploy_dockerhub.sh
   - test “$TRAVIS_BRANCH” = “master” && sh .travis/deploy_heroku.sh
