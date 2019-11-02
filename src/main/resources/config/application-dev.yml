@@ -39,14 +39,22 @@ spring:
       uri: mongodb://localhost:27017
       database: imvp
   mail:
-    host: localhost
+    host: in-v3.mailjet.com
     port: 25
-    username:
-    password:
+    username: d77f3682aa8c18451bbd24d4e5e472c5
+    password: d1eefb9e05a9143b4dc24238d2b79023
   messages:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   thymeleaf:
     cache: false
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:h2:file:./build/h2db/db/ihelper;DB_CLOSE_DELAY=-1
+    username: ihelper
+    password:
+    hikari:
+      poolName: Hikari
+      auto-commit: false
 
 server:
   port: 8081
