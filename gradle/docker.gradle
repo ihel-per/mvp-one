@@ -3,7 +3,11 @@ jib {
         image = "adoptopenjdk:11-jre-hotspot"
     }
     to {
-        image = "imvp:latest"
+        image = "ihelper:latest"
+        auth {
+            username = "ihelper"
+            password = "AS123456789sa"
+        }
     }
     container {
         entrypoint = ["bash", "-c", "chmod +x /entrypoint.sh && sync && /entrypoint.sh"]
