@@ -40,8 +40,8 @@ script:
   - chmod +x gradlew
   - ./gradlew clean test integrationTest
   - ./gradlew npm_run_test-ci -PnodeInstall --no-daemon
-  #  - ./gradlew bootJar -Pprod -x test
-  - ./gradlew -Pprod bootJar jib
+    - ./gradlew bootJar -Pprod -x test
+#  - ./gradlew -Pprod bootJar jib
 notifications:
   webhooks:
     on_success: change # options: [always|never|change] default: always
