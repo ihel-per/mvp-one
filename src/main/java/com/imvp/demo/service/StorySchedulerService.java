@@ -1,11 +1,10 @@
 package com.imvp.demo.service;
 
 
-import com.imvp.demo.domain.Item;
+import com.imvp.demo.domain.Story;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
-import java.util.UUID;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -19,22 +18,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TestScheduler {
+public class StorySchedulerService {
 
-    private final Logger log = LoggerFactory.getLogger(TestScheduler.class);
+    private final Logger log = LoggerFactory.getLogger(StorySchedulerService.class);
 
     private final Scheduler scheduler;
 
-    public TestScheduler(Scheduler scheduler) {
+    public StorySchedulerService(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
-    public String scheduleJob(Item item) {
+    public String scheduleJob(Story story) {
 
         JobDetail jobDetail = buildJobDetail(Map.of(
-            "itemId", item.getId()
+            "itemId", story.getId()
         ));
-        Trigger trigger = buildJobTrigger(jobDetail, item.getPublishTime());
+        Trigger trigger = buildJobTrigger(jobDetail, story.getPublishTime());
         try {
             Date date = scheduler.scheduleJob(jobDetail, trigger);
             log.info("PUBLISH TIME : {}", date);
@@ -45,25 +44,23 @@ public class TestScheduler {
         }
     }
 
-
     private JobDetail buildJobDetail(Map<String, Object> params) {
         JobDataMap jobDataMap = new JobDataMap();
-
         jobDataMap.putAll(params);
 
-        return JobBuilder.newJob(PostJob.class)
-            .withIdentity(UUID.randomUUID().toString(), "post-jobs")
-            .withDescription("Publish post Job")
+        return JobBuilder.newJob(StoryJob.class)
+            .withIdentity("story-job", "story-jobs-group")
+            .withDescription("Publish story Job")
             .usingJobData(jobDataMap)
-            .storeDurably()
+            //.storeDurably()
             .build();
     }
 
     private Trigger buildJobTrigger(JobDetail jobDetail, Instant startAt) {
         return TriggerBuilder.newTrigger()
             .forJob(jobDetail)
-            .withIdentity(jobDetail.getKey().getName(), "post-triggers")
-            .withDescription("Publish post Trigger")
+            .withIdentity(jobDetail.getKey().getName(), "story-triggers")
+            .withDescription("Publish story Trigger")
             .startAt(Date.from(startAt))
             .withSchedule(SimpleScheduleBuilder.simpleSchedule().withMisfireHandlingInstructionFireNow())
             .build();

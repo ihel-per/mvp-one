@@ -1,14 +1,13 @@
 package com.imvp.demo.service;
 
 import com.imvp.demo.domain.Item;
+import com.imvp.demo.domain.Profile;
 import com.imvp.demo.domain.enumeration.Status;
 import com.imvp.demo.repository.ItemRepository;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import org.brunocvcunha.instagram4j.Instagram4j;
 import org.brunocvcunha.instagram4j.requests.InstagramUploadPhotoRequest;
@@ -20,13 +19,13 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PostJob extends QuartzJobBean {
+public class ItemJob extends QuartzJobBean {
 
     private final ItemRepository itemRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(PostJob.class);
+    private static final Logger logger = LoggerFactory.getLogger(ItemJob.class);
 
-    public PostJob(ItemRepository itemRepository) {
+    public ItemJob(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
     }
 
@@ -40,10 +39,13 @@ public class PostJob extends QuartzJobBean {
 
     private void post(JobDataMap jobDataMap) {
 
+
+
         Item itemId = itemRepository.findById(jobDataMap.getString("itemId"))
             .get();
 
         try {
+            Profile owner = itemId.getOwner();
 
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             byteArrayOutputStream.writeBytes(itemId.getContent());
@@ -51,21 +53,16 @@ public class PostJob extends QuartzJobBean {
             InputStream in = new ByteArrayInputStream(itemId.getContent());
             BufferedImage bImageFromConvert = ImageIO.read(in);
 
-            Instagram4j instagram = Instagram4j.builder().username("FIXME").password("FIXME").build();
+            Instagram4j instagram = Instagram4j.builder().username(owner.getNick()).password(owner.getSencha()).build();
             instagram.setup();
             instagram.login();
 
-            String tags = Arrays.stream(itemId.getTags().split(" "))
-                .map(it -> "#" + it)
-                .collect(Collectors.joining(" "));
-
-            String text = itemId.getText() + "\n" + tags;
-
-            instagram.sendRequest(new InstagramUploadPhotoRequest(bImageFromConvert, text, null));
+         //   instagram.
+            instagram.sendRequest(new InstagramUploadPhotoRequest(bImageFromConvert, itemId.getText(), null));
 
             itemId.status(Status.PUBLISHED);
         } catch (Exception e) {
-            itemId.status(Status.CANCELLED);
+            itemId.status(Status.REJECTED);
             logger.error("", e);
         }
 

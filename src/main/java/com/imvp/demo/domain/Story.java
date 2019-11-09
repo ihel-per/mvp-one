@@ -12,10 +12,10 @@ import java.time.Instant;
 import com.imvp.demo.domain.enumeration.Status;
 
 /**
- * A Item.
+ * A Story.
  */
-@Document(collection = "item")
-public class Item implements Serializable, Scheduled {
+@Document(collection = "story")
+public class Story implements Serializable, Scheduled {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,7 +42,7 @@ public class Item implements Serializable, Scheduled {
 
     @DBRef
     @Field("owner")
-    @JsonIgnoreProperties("items")
+    @JsonIgnoreProperties("stories")
     private Profile owner;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -59,7 +59,7 @@ public class Item implements Serializable, Scheduled {
         return status;
     }
 
-    public Item status(Status status) {
+    public Story status(Status status) {
         this.status = status;
         return this;
     }
@@ -72,7 +72,7 @@ public class Item implements Serializable, Scheduled {
         return text;
     }
 
-    public Item text(String text) {
+    public Story text(String text) {
         this.text = text;
         return this;
     }
@@ -86,7 +86,7 @@ public class Item implements Serializable, Scheduled {
         return publishTime;
     }
 
-    public Item publishTime(Instant publishTime) {
+    public Story publishTime(Instant publishTime) {
         this.publishTime = publishTime;
         return this;
     }
@@ -99,7 +99,7 @@ public class Item implements Serializable, Scheduled {
         return content;
     }
 
-    public Item content(byte[] content) {
+    public Story content(byte[] content) {
         this.content = content;
         return this;
     }
@@ -112,7 +112,7 @@ public class Item implements Serializable, Scheduled {
         return contentContentType;
     }
 
-    public Item contentContentType(String contentContentType) {
+    public Story contentContentType(String contentContentType) {
         this.contentContentType = contentContentType;
         return this;
     }
@@ -125,7 +125,7 @@ public class Item implements Serializable, Scheduled {
         return owner;
     }
 
-    public Item owner(Profile profile) {
+    public Story owner(Profile profile) {
         this.owner = profile;
         return this;
     }
@@ -140,10 +140,10 @@ public class Item implements Serializable, Scheduled {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Item)) {
+        if (!(o instanceof Story)) {
             return false;
         }
-        return id != null && id.equals(((Item) o).id);
+        return id != null && id.equals(((Story) o).id);
     }
 
     @Override
@@ -153,7 +153,7 @@ public class Item implements Serializable, Scheduled {
 
     @Override
     public String toString() {
-        return "Item{" +
+        return "Story{" +
             "id=" + getId() +
             ", status='" + getStatus() + "'" +
             ", text='" + getText() + "'" +

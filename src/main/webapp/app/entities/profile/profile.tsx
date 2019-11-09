@@ -3,21 +3,21 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Col, Row, Table } from 'reactstrap';
-import { openFile, byteSize, ICrudGetAllAction, TextFormat, getSortState, IPaginationBaseState } from 'react-jhipster';
+import { ICrudGetAllAction, getSortState, IPaginationBaseState } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
-import { getEntities, reset } from './item.reducer';
-import { IItem } from 'app/shared/model/item.model';
+import { getEntities, reset } from './profile.reducer';
+import { IProfile } from 'app/shared/model/profile.model';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
 
-export interface IItemProps extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
+export interface IProfileProps extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
 
-export type IItemState = IPaginationBaseState;
+export type IProfileState = IPaginationBaseState;
 
-export class Item extends React.Component<IItemProps, IItemState> {
-  state: IItemState = {
+export class Profile extends React.Component<IProfileProps, IProfileState> {
+  state: IProfileState = {
     ...getSortState(this.props.location, ITEMS_PER_PAGE)
   };
 
@@ -62,14 +62,14 @@ export class Item extends React.Component<IItemProps, IItemState> {
   };
 
   render() {
-    const { itemList, match } = this.props;
+    const { profileList, match } = this.props;
     return (
       <div>
-        <h2 id="item-heading">
-          Items
+        <h2 id="profile-heading">
+          Profiles
           <Link to={`${match.url}/new`} className="btn btn-primary float-right jh-create-entity" id="jh-create-entity">
             <FontAwesomeIcon icon="plus" />
-            &nbsp; Create a new Item
+            &nbsp; Create a new Profile
           </Link>
         </h2>
         <div className="table-responsive">
@@ -81,24 +81,18 @@ export class Item extends React.Component<IItemProps, IItemState> {
             threshold={0}
             initialLoad={false}
           >
-            {itemList && itemList.length > 0 ? (
-              <Table responsive aria-describedby="item-heading">
+            {profileList && profileList.length > 0 ? (
+              <Table responsive aria-describedby="profile-heading">
                 <thead>
                   <tr>
                     <th className="hand" onClick={this.sort('id')}>
                       ID <FontAwesomeIcon icon="sort" />
                     </th>
-                    <th className="hand" onClick={this.sort('status')}>
-                      Status <FontAwesomeIcon icon="sort" />
+                    <th className="hand" onClick={this.sort('nick')}>
+                      Nick <FontAwesomeIcon icon="sort" />
                     </th>
-                    <th className="hand" onClick={this.sort('text')}>
-                      Text <FontAwesomeIcon icon="sort" />
-                    </th>
-                    <th className="hand" onClick={this.sort('publishTime')}>
-                      Publish Time <FontAwesomeIcon icon="sort" />
-                    </th>
-                    <th className="hand" onClick={this.sort('content')}>
-                      Content <FontAwesomeIcon icon="sort" />
+                    <th className="hand" onClick={this.sort('sencha')}>
+                      Sencha <FontAwesomeIcon icon="sort" />
                     </th>
                     <th>
                       Owner <FontAwesomeIcon icon="sort" />
@@ -107,38 +101,25 @@ export class Item extends React.Component<IItemProps, IItemState> {
                   </tr>
                 </thead>
                 <tbody>
-                  {itemList.map((item, i) => (
+                  {profileList.map((profile, i) => (
                     <tr key={`entity-${i}`}>
                       <td>
-                        <Button tag={Link} to={`${match.url}/${item.id}`} color="link" size="sm">
-                          {item.id}
+                        <Button tag={Link} to={`${match.url}/${profile.id}`} color="link" size="sm">
+                          {profile.id}
                         </Button>
                       </td>
-                      <td>{item.status}</td>
-                      <td>{item.text}</td>
-                      <td>
-                        <TextFormat type="date" value={item.publishTime} format={APP_DATE_FORMAT} />
-                      </td>
-                      <td>
-                        {item.content ? (
-                          <div>
-                            <a onClick={openFile(item.contentContentType, item.content)}>Open &nbsp;</a>
-                            <span>
-                              {item.contentContentType}, {byteSize(item.content)}
-                            </span>
-                          </div>
-                        ) : null}
-                      </td>
-                      <td>{item.owner ? <Link to={`profile/${item.owner.id}`}>{item.owner.id}</Link> : ''}</td>
+                      <td>{profile.nick}</td>
+                      <td>{profile.sencha}</td>
+                      <td>{profile.owner ? profile.owner.id : ''}</td>
                       <td className="text-right">
                         <div className="btn-group flex-btn-group-container">
-                          <Button tag={Link} to={`${match.url}/${item.id}`} color="info" size="sm">
+                          <Button tag={Link} to={`${match.url}/${profile.id}`} color="info" size="sm">
                             <FontAwesomeIcon icon="eye" /> <span className="d-none d-md-inline">View</span>
                           </Button>
-                          <Button tag={Link} to={`${match.url}/${item.id}/edit`} color="primary" size="sm">
+                          <Button tag={Link} to={`${match.url}/${profile.id}/edit`} color="primary" size="sm">
                             <FontAwesomeIcon icon="pencil-alt" /> <span className="d-none d-md-inline">Edit</span>
                           </Button>
-                          <Button tag={Link} to={`${match.url}/${item.id}/delete`} color="danger" size="sm">
+                          <Button tag={Link} to={`${match.url}/${profile.id}/delete`} color="danger" size="sm">
                             <FontAwesomeIcon icon="trash" /> <span className="d-none d-md-inline">Delete</span>
                           </Button>
                         </div>
@@ -148,7 +129,7 @@ export class Item extends React.Component<IItemProps, IItemState> {
                 </tbody>
               </Table>
             ) : (
-              <div className="alert alert-warning">No Items found</div>
+              <div className="alert alert-warning">No Profiles found</div>
             )}
           </InfiniteScroll>
         </div>
@@ -157,12 +138,12 @@ export class Item extends React.Component<IItemProps, IItemState> {
   }
 }
 
-const mapStateToProps = ({ item }: IRootState) => ({
-  itemList: item.entities,
-  totalItems: item.totalItems,
-  links: item.links,
-  entity: item.entity,
-  updateSuccess: item.updateSuccess
+const mapStateToProps = ({ profile }: IRootState) => ({
+  profileList: profile.entities,
+  totalItems: profile.totalItems,
+  links: profile.links,
+  entity: profile.entity,
+  updateSuccess: profile.updateSuccess
 });
 
 const mapDispatchToProps = {
@@ -176,4 +157,4 @@ type DispatchProps = typeof mapDispatchToProps;
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Item);
+)(Profile);
