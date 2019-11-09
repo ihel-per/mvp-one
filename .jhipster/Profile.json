@@ -1,0 +1,38 @@
+{
+    "name": "Profile",
+    "fields": [
+        {
+            "fieldName": "nick",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "sencha",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "user",
+            "otherEntityRelationshipName": "profile",
+            "relationshipName": "owner",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20191109142916",
+    "entityTableName": "profile",
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

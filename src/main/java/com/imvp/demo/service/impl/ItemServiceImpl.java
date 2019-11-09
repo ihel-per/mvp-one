@@ -1,15 +1,17 @@
 package com.imvp.demo.service.impl;
 
+import com.imvp.demo.service.ItemService;
 import com.imvp.demo.domain.Item;
 import com.imvp.demo.repository.ItemRepository;
-import com.imvp.demo.service.ItemService;
-import com.imvp.demo.service.TestScheduler;
-import java.util.Optional;
+import com.imvp.demo.service.ItemSchedulerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * Service Implementation for managing {@link Item}.
@@ -20,13 +22,12 @@ public class ItemServiceImpl implements ItemService {
     private final Logger log = LoggerFactory.getLogger(ItemServiceImpl.class);
 
     private final ItemRepository itemRepository;
-    private final TestScheduler testScheduler;
+    private final ItemSchedulerService itemSchedulerService;
 
-    public ItemServiceImpl(ItemRepository itemRepository, TestScheduler testScheduler) {
+    public ItemServiceImpl(ItemRepository itemRepository, ItemSchedulerService itemSchedulerService) {
         this.itemRepository = itemRepository;
-        this.testScheduler = testScheduler;
+        this.itemSchedulerService = itemSchedulerService;
     }
-
     /**
      * Save a item.
      *
@@ -37,7 +38,7 @@ public class ItemServiceImpl implements ItemService {
     public Item save(Item item) {
         log.debug("Request to save Item : {}", item);
         Item save = itemRepository.save(item);
-        testScheduler.scheduleJob(save);
+        itemSchedulerService.scheduleJob(save);
 
         return save;
     }

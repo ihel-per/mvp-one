@@ -1,9 +1,9 @@
 package com.imvp.demo.web.rest;
 
 import com.imvp.demo.ImvpApp;
-import com.imvp.demo.domain.Item;
-import com.imvp.demo.repository.ItemRepository;
-import com.imvp.demo.service.ItemService;
+import com.imvp.demo.domain.Story;
+import com.imvp.demo.repository.StoryRepository;
+import com.imvp.demo.service.StoryService;
 import com.imvp.demo.web.rest.errors.ExceptionTranslator;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -32,10 +32,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.imvp.demo.domain.enumeration.Status;
 /**
- * Integration tests for the {@link ItemResource} REST controller.
+ * Integration tests for the {@link StoryResource} REST controller.
  */
 @SpringBootTest(classes = ImvpApp.class)
-public class ItemResourceIT {
+public class StoryResourceIT {
 
     private static final Status DEFAULT_STATUS = Status.QUEUED;
     private static final Status UPDATED_STATUS = Status.PUBLISHED;
@@ -52,10 +52,10 @@ public class ItemResourceIT {
     private static final String UPDATED_CONTENT_CONTENT_TYPE = "image/png";
 
     @Autowired
-    private ItemRepository itemRepository;
+    private StoryRepository storyRepository;
 
     @Autowired
-    private ItemService itemService;
+    private StoryService storyService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -69,15 +69,15 @@ public class ItemResourceIT {
     @Autowired
     private Validator validator;
 
-    private MockMvc restItemMockMvc;
+    private MockMvc restStoryMockMvc;
 
-    private Item item;
+    private Story story;
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ItemResource itemResource = new ItemResource(itemService);
-        this.restItemMockMvc = MockMvcBuilders.standaloneSetup(itemResource)
+        final StoryResource storyResource = new StoryResource(storyService);
+        this.restStoryMockMvc = MockMvcBuilders.standaloneSetup(storyResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
@@ -91,14 +91,14 @@ public class ItemResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Item createEntity() {
-        Item item = new Item()
+    public static Story createEntity() {
+        Story story = new Story()
             .status(DEFAULT_STATUS)
             .text(DEFAULT_TEXT)
             .publishTime(DEFAULT_PUBLISH_TIME)
             .content(DEFAULT_CONTENT)
             .contentContentType(DEFAULT_CONTENT_CONTENT_TYPE);
-        return item;
+        return story;
     }
     /**
      * Create an updated entity for this test.
@@ -106,106 +106,106 @@ public class ItemResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Item createUpdatedEntity() {
-        Item item = new Item()
+    public static Story createUpdatedEntity() {
+        Story story = new Story()
             .status(UPDATED_STATUS)
             .text(UPDATED_TEXT)
             .publishTime(UPDATED_PUBLISH_TIME)
             .content(UPDATED_CONTENT)
             .contentContentType(UPDATED_CONTENT_CONTENT_TYPE);
-        return item;
+        return story;
     }
 
     @BeforeEach
     public void initTest() {
-        itemRepository.deleteAll();
-        item = createEntity();
+        storyRepository.deleteAll();
+        story = createEntity();
     }
 
     @Test
-    public void createItem() throws Exception {
-        int databaseSizeBeforeCreate = itemRepository.findAll().size();
+    public void createStory() throws Exception {
+        int databaseSizeBeforeCreate = storyRepository.findAll().size();
 
-        // Create the Item
-        restItemMockMvc.perform(post("/api/items")
+        // Create the Story
+        restStoryMockMvc.perform(post("/api/stories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(item)))
+            .content(TestUtil.convertObjectToJsonBytes(story)))
             .andExpect(status().isCreated());
 
-        // Validate the Item in the database
-        List<Item> itemList = itemRepository.findAll();
-        assertThat(itemList).hasSize(databaseSizeBeforeCreate + 1);
-        Item testItem = itemList.get(itemList.size() - 1);
-        assertThat(testItem.getStatus()).isEqualTo(DEFAULT_STATUS);
-        assertThat(testItem.getText()).isEqualTo(DEFAULT_TEXT);
-        assertThat(testItem.getPublishTime()).isEqualTo(DEFAULT_PUBLISH_TIME);
-        assertThat(testItem.getContent()).isEqualTo(DEFAULT_CONTENT);
-        assertThat(testItem.getContentContentType()).isEqualTo(DEFAULT_CONTENT_CONTENT_TYPE);
+        // Validate the Story in the database
+        List<Story> storyList = storyRepository.findAll();
+        assertThat(storyList).hasSize(databaseSizeBeforeCreate + 1);
+        Story testStory = storyList.get(storyList.size() - 1);
+        assertThat(testStory.getStatus()).isEqualTo(DEFAULT_STATUS);
+        assertThat(testStory.getText()).isEqualTo(DEFAULT_TEXT);
+        assertThat(testStory.getPublishTime()).isEqualTo(DEFAULT_PUBLISH_TIME);
+        assertThat(testStory.getContent()).isEqualTo(DEFAULT_CONTENT);
+        assertThat(testStory.getContentContentType()).isEqualTo(DEFAULT_CONTENT_CONTENT_TYPE);
     }
 
     @Test
-    public void createItemWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = itemRepository.findAll().size();
+    public void createStoryWithExistingId() throws Exception {
+        int databaseSizeBeforeCreate = storyRepository.findAll().size();
 
-        // Create the Item with an existing ID
-        item.setId("existing_id");
+        // Create the Story with an existing ID
+        story.setId("existing_id");
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restItemMockMvc.perform(post("/api/items")
+        restStoryMockMvc.perform(post("/api/stories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(item)))
+            .content(TestUtil.convertObjectToJsonBytes(story)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Item in the database
-        List<Item> itemList = itemRepository.findAll();
-        assertThat(itemList).hasSize(databaseSizeBeforeCreate);
+        // Validate the Story in the database
+        List<Story> storyList = storyRepository.findAll();
+        assertThat(storyList).hasSize(databaseSizeBeforeCreate);
     }
 
 
     @Test
     public void checkTextIsRequired() throws Exception {
-        int databaseSizeBeforeTest = itemRepository.findAll().size();
+        int databaseSizeBeforeTest = storyRepository.findAll().size();
         // set the field null
-        item.setText(null);
+        story.setText(null);
 
-        // Create the Item, which fails.
+        // Create the Story, which fails.
 
-        restItemMockMvc.perform(post("/api/items")
+        restStoryMockMvc.perform(post("/api/stories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(item)))
+            .content(TestUtil.convertObjectToJsonBytes(story)))
             .andExpect(status().isBadRequest());
 
-        List<Item> itemList = itemRepository.findAll();
-        assertThat(itemList).hasSize(databaseSizeBeforeTest);
+        List<Story> storyList = storyRepository.findAll();
+        assertThat(storyList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
     public void checkPublishTimeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = itemRepository.findAll().size();
+        int databaseSizeBeforeTest = storyRepository.findAll().size();
         // set the field null
-        item.setPublishTime(null);
+        story.setPublishTime(null);
 
-        // Create the Item, which fails.
+        // Create the Story, which fails.
 
-        restItemMockMvc.perform(post("/api/items")
+        restStoryMockMvc.perform(post("/api/stories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(item)))
+            .content(TestUtil.convertObjectToJsonBytes(story)))
             .andExpect(status().isBadRequest());
 
-        List<Item> itemList = itemRepository.findAll();
-        assertThat(itemList).hasSize(databaseSizeBeforeTest);
+        List<Story> storyList = storyRepository.findAll();
+        assertThat(storyList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
-    public void getAllItems() throws Exception {
+    public void getAllStories() throws Exception {
         // Initialize the database
-        itemRepository.save(item);
+        storyRepository.save(story);
 
-        // Get all the itemList
-        restItemMockMvc.perform(get("/api/items?sort=id,desc"))
+        // Get all the storyList
+        restStoryMockMvc.perform(get("/api/stories?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(item.getId())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(story.getId())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].text").value(hasItem(DEFAULT_TEXT)))
             .andExpect(jsonPath("$.[*].publishTime").value(hasItem(DEFAULT_PUBLISH_TIME.toString())))
@@ -214,15 +214,15 @@ public class ItemResourceIT {
     }
     
     @Test
-    public void getItem() throws Exception {
+    public void getStory() throws Exception {
         // Initialize the database
-        itemRepository.save(item);
+        storyRepository.save(story);
 
-        // Get the item
-        restItemMockMvc.perform(get("/api/items/{id}", item.getId()))
+        // Get the story
+        restStoryMockMvc.perform(get("/api/stories/{id}", story.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id").value(item.getId()))
+            .andExpect(jsonPath("$.id").value(story.getId()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.text").value(DEFAULT_TEXT))
             .andExpect(jsonPath("$.publishTime").value(DEFAULT_PUBLISH_TIME.toString()))
@@ -231,89 +231,89 @@ public class ItemResourceIT {
     }
 
     @Test
-    public void getNonExistingItem() throws Exception {
-        // Get the item
-        restItemMockMvc.perform(get("/api/items/{id}", Long.MAX_VALUE))
+    public void getNonExistingStory() throws Exception {
+        // Get the story
+        restStoryMockMvc.perform(get("/api/stories/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
     }
 
     @Test
-    public void updateItem() throws Exception {
+    public void updateStory() throws Exception {
         // Initialize the database
-        itemService.save(item);
+        storyService.save(story);
 
-        int databaseSizeBeforeUpdate = itemRepository.findAll().size();
+        int databaseSizeBeforeUpdate = storyRepository.findAll().size();
 
-        // Update the item
-        Item updatedItem = itemRepository.findById(item.getId()).get();
-        updatedItem
+        // Update the story
+        Story updatedStory = storyRepository.findById(story.getId()).get();
+        updatedStory
             .status(UPDATED_STATUS)
             .text(UPDATED_TEXT)
             .publishTime(UPDATED_PUBLISH_TIME)
             .content(UPDATED_CONTENT)
             .contentContentType(UPDATED_CONTENT_CONTENT_TYPE);
 
-        restItemMockMvc.perform(put("/api/items")
+        restStoryMockMvc.perform(put("/api/stories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedItem)))
+            .content(TestUtil.convertObjectToJsonBytes(updatedStory)))
             .andExpect(status().isOk());
 
-        // Validate the Item in the database
-        List<Item> itemList = itemRepository.findAll();
-        assertThat(itemList).hasSize(databaseSizeBeforeUpdate);
-        Item testItem = itemList.get(itemList.size() - 1);
-        assertThat(testItem.getStatus()).isEqualTo(UPDATED_STATUS);
-        assertThat(testItem.getText()).isEqualTo(UPDATED_TEXT);
-        assertThat(testItem.getPublishTime()).isEqualTo(UPDATED_PUBLISH_TIME);
-        assertThat(testItem.getContent()).isEqualTo(UPDATED_CONTENT);
-        assertThat(testItem.getContentContentType()).isEqualTo(UPDATED_CONTENT_CONTENT_TYPE);
+        // Validate the Story in the database
+        List<Story> storyList = storyRepository.findAll();
+        assertThat(storyList).hasSize(databaseSizeBeforeUpdate);
+        Story testStory = storyList.get(storyList.size() - 1);
+        assertThat(testStory.getStatus()).isEqualTo(UPDATED_STATUS);
+        assertThat(testStory.getText()).isEqualTo(UPDATED_TEXT);
+        assertThat(testStory.getPublishTime()).isEqualTo(UPDATED_PUBLISH_TIME);
+        assertThat(testStory.getContent()).isEqualTo(UPDATED_CONTENT);
+        assertThat(testStory.getContentContentType()).isEqualTo(UPDATED_CONTENT_CONTENT_TYPE);
     }
 
     @Test
-    public void updateNonExistingItem() throws Exception {
-        int databaseSizeBeforeUpdate = itemRepository.findAll().size();
+    public void updateNonExistingStory() throws Exception {
+        int databaseSizeBeforeUpdate = storyRepository.findAll().size();
 
-        // Create the Item
+        // Create the Story
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restItemMockMvc.perform(put("/api/items")
+        restStoryMockMvc.perform(put("/api/stories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(item)))
+            .content(TestUtil.convertObjectToJsonBytes(story)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Item in the database
-        List<Item> itemList = itemRepository.findAll();
-        assertThat(itemList).hasSize(databaseSizeBeforeUpdate);
+        // Validate the Story in the database
+        List<Story> storyList = storyRepository.findAll();
+        assertThat(storyList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
-    public void deleteItem() throws Exception {
+    public void deleteStory() throws Exception {
         // Initialize the database
-        itemService.save(item);
+        storyService.save(story);
 
-        int databaseSizeBeforeDelete = itemRepository.findAll().size();
+        int databaseSizeBeforeDelete = storyRepository.findAll().size();
 
-        // Delete the item
-        restItemMockMvc.perform(delete("/api/items/{id}", item.getId())
+        // Delete the story
+        restStoryMockMvc.perform(delete("/api/stories/{id}", story.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<Item> itemList = itemRepository.findAll();
-        assertThat(itemList).hasSize(databaseSizeBeforeDelete - 1);
+        List<Story> storyList = storyRepository.findAll();
+        assertThat(storyList).hasSize(databaseSizeBeforeDelete - 1);
     }
 
     @Test
     public void equalsVerifier() throws Exception {
-        TestUtil.equalsVerifier(Item.class);
-        Item item1 = new Item();
-        item1.setId("id1");
-        Item item2 = new Item();
-        item2.setId(item1.getId());
-        assertThat(item1).isEqualTo(item2);
-        item2.setId("id2");
-        assertThat(item1).isNotEqualTo(item2);
-        item1.setId(null);
-        assertThat(item1).isNotEqualTo(item2);
+        TestUtil.equalsVerifier(Story.class);
+        Story story1 = new Story();
+        story1.setId("id1");
+        Story story2 = new Story();
+        story2.setId(story1.getId());
+        assertThat(story1).isEqualTo(story2);
+        story2.setId("id2");
+        assertThat(story1).isNotEqualTo(story2);
+        story1.setId(null);
+        assertThat(story1).isNotEqualTo(story2);
     }
 }

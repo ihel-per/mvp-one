@@ -9,19 +9,19 @@ import { IRootState } from 'app/shared/reducers';
 
 import { IProfile } from 'app/shared/model/profile.model';
 import { getEntities as getProfiles } from 'app/entities/profile/profile.reducer';
-import { getEntity, updateEntity, createEntity, setBlob, reset } from './item.reducer';
-import { IItem } from 'app/shared/model/item.model';
+import { getEntity, updateEntity, createEntity, setBlob, reset } from './story.reducer';
+import { IStory } from 'app/shared/model/story.model';
 import { convertDateTimeFromServer, convertDateTimeToServer } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
 
-export interface IItemUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
+export interface IStoryUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
-export interface IItemUpdateState {
+export interface IStoryUpdateState {
   isNew: boolean;
   ownerId: string;
 }
 
-export class ItemUpdate extends React.Component<IItemUpdateProps, IItemUpdateState> {
+export class StoryUpdate extends React.Component<IStoryUpdateProps, IStoryUpdateState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -56,9 +56,9 @@ export class ItemUpdate extends React.Component<IItemUpdateProps, IItemUpdateSta
     values.publishTime = convertDateTimeToServer(values.publishTime);
 
     if (errors.length === 0) {
-      const { itemEntity } = this.props;
+      const { storyEntity } = this.props;
       const entity = {
-        ...itemEntity,
+        ...storyEntity,
         ...values
       };
 
@@ -71,20 +71,20 @@ export class ItemUpdate extends React.Component<IItemUpdateProps, IItemUpdateSta
   };
 
   handleClose = () => {
-    this.props.history.push('/entity/item');
+    this.props.history.push('/entity/story');
   };
 
   render() {
-    const { itemEntity, profiles, loading, updating } = this.props;
+    const { storyEntity, profiles, loading, updating } = this.props;
     const { isNew } = this.state;
 
-    const { content, contentContentType } = itemEntity;
+    const { content, contentContentType } = storyEntity;
 
     return (
       <div>
         <Row className="justify-content-center">
           <Col md="8">
-            <h2 id="imvpApp.item.home.createOrEditLabel">Create or edit a Item</h2>
+            <h2 id="imvpApp.story.home.createOrEditLabel">Create or edit a Story</h2>
           </Col>
         </Row>
         <Row className="justify-content-center">
@@ -92,23 +92,23 @@ export class ItemUpdate extends React.Component<IItemUpdateProps, IItemUpdateSta
             {loading ? (
               <p>Loading...</p>
             ) : (
-              <AvForm model={isNew ? {} : itemEntity} onSubmit={this.saveEntity}>
+              <AvForm model={isNew ? {} : storyEntity} onSubmit={this.saveEntity}>
                 {!isNew ? (
                   <AvGroup>
-                    <Label for="item-id">ID</Label>
-                    <AvInput id="item-id" type="text" className="form-control" name="id" required readOnly />
+                    <Label for="story-id">ID</Label>
+                    <AvInput id="story-id" type="text" className="form-control" name="id" required readOnly />
                   </AvGroup>
                 ) : null}
                 <AvGroup>
-                  <Label id="statusLabel" for="item-status">
+                  <Label id="statusLabel" for="story-status">
                     Status
                   </Label>
                   <AvInput
-                    id="item-status"
+                    id="story-status"
                     type="select"
                     className="form-control"
                     name="status"
-                    value={(!isNew && itemEntity.status) || 'QUEUED'}
+                    value={(!isNew && storyEntity.status) || 'QUEUED'}
                   >
                     <option value="QUEUED">QUEUED</option>
                     <option value="PUBLISHED">PUBLISHED</option>
@@ -117,11 +117,11 @@ export class ItemUpdate extends React.Component<IItemUpdateProps, IItemUpdateSta
                   </AvInput>
                 </AvGroup>
                 <AvGroup>
-                  <Label id="textLabel" for="item-text">
+                  <Label id="textLabel" for="story-text">
                     Text
                   </Label>
                   <AvField
-                    id="item-text"
+                    id="story-text"
                     type="text"
                     name="text"
                     validate={{
@@ -130,16 +130,16 @@ export class ItemUpdate extends React.Component<IItemUpdateProps, IItemUpdateSta
                   />
                 </AvGroup>
                 <AvGroup>
-                  <Label id="publishTimeLabel" for="item-publishTime">
+                  <Label id="publishTimeLabel" for="story-publishTime">
                     Publish Time
                   </Label>
                   <AvInput
-                    id="item-publishTime"
+                    id="story-publishTime"
                     type="datetime-local"
                     className="form-control"
                     name="publishTime"
                     placeholder={'YYYY-MM-DD HH:mm'}
-                    value={isNew ? null : convertDateTimeFromServer(this.props.itemEntity.publishTime)}
+                    value={isNew ? null : convertDateTimeFromServer(this.props.storyEntity.publishTime)}
                     validate={{
                       required: { value: true, errorMessage: 'This field is required.' }
                     }}
@@ -181,8 +181,8 @@ export class ItemUpdate extends React.Component<IItemUpdateProps, IItemUpdateSta
                   </AvGroup>
                 </AvGroup>
                 <AvGroup>
-                  <Label for="item-owner">Owner</Label>
-                  <AvInput id="item-owner" type="select" className="form-control" name="owner.id">
+                  <Label for="story-owner">Owner</Label>
+                  <AvInput id="story-owner" type="select" className="form-control" name="owner.id">
                     <option value="" key="0" />
                     {profiles
                       ? profiles.map(otherEntity => (
@@ -193,7 +193,7 @@ export class ItemUpdate extends React.Component<IItemUpdateProps, IItemUpdateSta
                       : null}
                   </AvInput>
                 </AvGroup>
-                <Button tag={Link} id="cancel-save" to="/entity/item" replace color="info">
+                <Button tag={Link} id="cancel-save" to="/entity/story" replace color="info">
                   <FontAwesomeIcon icon="arrow-left" />
                   &nbsp;
                   <span className="d-none d-md-inline">Back</span>
@@ -214,10 +214,10 @@ export class ItemUpdate extends React.Component<IItemUpdateProps, IItemUpdateSta
 
 const mapStateToProps = (storeState: IRootState) => ({
   profiles: storeState.profile.entities,
-  itemEntity: storeState.item.entity,
-  loading: storeState.item.loading,
-  updating: storeState.item.updating,
-  updateSuccess: storeState.item.updateSuccess
+  storyEntity: storeState.story.entity,
+  loading: storeState.story.loading,
+  updating: storeState.story.updating,
+  updateSuccess: storeState.story.updateSuccess
 });
 
 const mapDispatchToProps = {
@@ -235,4 +235,4 @@ type DispatchProps = typeof mapDispatchToProps;
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ItemUpdate);
+)(StoryUpdate);

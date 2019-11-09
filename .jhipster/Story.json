@@ -1,5 +1,5 @@
 {
-    "name": "Item",
+    "name": "Story",
     "fields": [
         {
             "fieldName": "status",
@@ -33,13 +33,13 @@
         {
             "relationshipType": "many-to-one",
             "otherEntityName": "profile",
-            "otherEntityRelationshipName": "item",
+            "otherEntityRelationshipName": "story",
             "relationshipName": "owner",
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20191030182904",
-    "entityTableName": "item",
+    "changelogDate": "20191109142914",
+    "entityTableName": "story",
     "dto": "no",
     "pagination": "infinite-scroll",
     "service": "serviceImpl",

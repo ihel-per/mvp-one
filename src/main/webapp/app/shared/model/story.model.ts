@@ -2,7 +2,7 @@ import { Moment } from 'moment';
 import { IProfile } from 'app/shared/model/profile.model';
 import { Status } from 'app/shared/model/enumerations/status.model';
 
-export interface IItem {
+export interface IStory {
   id?: string;
   status?: Status;
   text?: string;
@@ -12,4 +12,4 @@ export interface IItem {
   owner?: IProfile;
 }
 
-export const defaultValue: Readonly<IItem> = {};
+export const defaultValue: Readonly<IStory> = {};

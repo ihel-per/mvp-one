@@ -7,17 +7,17 @@ import { openFile, byteSize, ICrudGetAllAction, TextFormat, getSortState, IPagin
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
-import { getEntities, reset } from './item.reducer';
-import { IItem } from 'app/shared/model/item.model';
+import { getEntities, reset } from './story.reducer';
+import { IStory } from 'app/shared/model/story.model';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
 
-export interface IItemProps extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
+export interface IStoryProps extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
 
-export type IItemState = IPaginationBaseState;
+export type IStoryState = IPaginationBaseState;
 
-export class Item extends React.Component<IItemProps, IItemState> {
-  state: IItemState = {
+export class Story extends React.Component<IStoryProps, IStoryState> {
+  state: IStoryState = {
     ...getSortState(this.props.location, ITEMS_PER_PAGE)
   };
 
@@ -62,14 +62,14 @@ export class Item extends React.Component<IItemProps, IItemState> {
   };
 
   render() {
-    const { itemList, match } = this.props;
+    const { storyList, match } = this.props;
     return (
       <div>
-        <h2 id="item-heading">
-          Items
+        <h2 id="story-heading">
+          Stories
           <Link to={`${match.url}/new`} className="btn btn-primary float-right jh-create-entity" id="jh-create-entity">
             <FontAwesomeIcon icon="plus" />
-            &nbsp; Create a new Item
+            &nbsp; Create a new Story
           </Link>
         </h2>
         <div className="table-responsive">
@@ -81,8 +81,8 @@ export class Item extends React.Component<IItemProps, IItemState> {
             threshold={0}
             initialLoad={false}
           >
-            {itemList && itemList.length > 0 ? (
-              <Table responsive aria-describedby="item-heading">
+            {storyList && storyList.length > 0 ? (
+              <Table responsive aria-describedby="story-heading">
                 <thead>
                   <tr>
                     <th className="hand" onClick={this.sort('id')}>
@@ -107,38 +107,38 @@ export class Item extends React.Component<IItemProps, IItemState> {
                   </tr>
                 </thead>
                 <tbody>
-                  {itemList.map((item, i) => (
+                  {storyList.map((story, i) => (
                     <tr key={`entity-${i}`}>
                       <td>
-                        <Button tag={Link} to={`${match.url}/${item.id}`} color="link" size="sm">
-                          {item.id}
+                        <Button tag={Link} to={`${match.url}/${story.id}`} color="link" size="sm">
+                          {story.id}
                         </Button>
                       </td>
-                      <td>{item.status}</td>
-                      <td>{item.text}</td>
+                      <td>{story.status}</td>
+                      <td>{story.text}</td>
                       <td>
-                        <TextFormat type="date" value={item.publishTime} format={APP_DATE_FORMAT} />
+                        <TextFormat type="date" value={story.publishTime} format={APP_DATE_FORMAT} />
                       </td>
                       <td>
-                        {item.content ? (
+                        {story.content ? (
                           <div>
-                            <a onClick={openFile(item.contentContentType, item.content)}>Open &nbsp;</a>
+                            <a onClick={openFile(story.contentContentType, story.content)}>Open &nbsp;</a>
                             <span>
-                              {item.contentContentType}, {byteSize(item.content)}
+                              {story.contentContentType}, {byteSize(story.content)}
                             </span>
                           </div>
                         ) : null}
                       </td>
-                      <td>{item.owner ? <Link to={`profile/${item.owner.id}`}>{item.owner.id}</Link> : ''}</td>
+                      <td>{story.owner ? <Link to={`profile/${story.owner.id}`}>{story.owner.id}</Link> : ''}</td>
                       <td className="text-right">
                         <div className="btn-group flex-btn-group-container">
-                          <Button tag={Link} to={`${match.url}/${item.id}`} color="info" size="sm">
+                          <Button tag={Link} to={`${match.url}/${story.id}`} color="info" size="sm">
                             <FontAwesomeIcon icon="eye" /> <span className="d-none d-md-inline">View</span>
                           </Button>
-                          <Button tag={Link} to={`${match.url}/${item.id}/edit`} color="primary" size="sm">
+                          <Button tag={Link} to={`${match.url}/${story.id}/edit`} color="primary" size="sm">
                             <FontAwesomeIcon icon="pencil-alt" /> <span className="d-none d-md-inline">Edit</span>
                           </Button>
-                          <Button tag={Link} to={`${match.url}/${item.id}/delete`} color="danger" size="sm">
+                          <Button tag={Link} to={`${match.url}/${story.id}/delete`} color="danger" size="sm">
                             <FontAwesomeIcon icon="trash" /> <span className="d-none d-md-inline">Delete</span>
                           </Button>
                         </div>
@@ -148,7 +148,7 @@ export class Item extends React.Component<IItemProps, IItemState> {
                 </tbody>
               </Table>
             ) : (
-              <div className="alert alert-warning">No Items found</div>
+              <div className="alert alert-warning">No Stories found</div>
             )}
           </InfiniteScroll>
         </div>
@@ -157,12 +157,12 @@ export class Item extends React.Component<IItemProps, IItemState> {
   }
 }
 
-const mapStateToProps = ({ item }: IRootState) => ({
-  itemList: item.entities,
-  totalItems: item.totalItems,
-  links: item.links,
-  entity: item.entity,
-  updateSuccess: item.updateSuccess
+const mapStateToProps = ({ story }: IRootState) => ({
+  storyList: story.entities,
+  totalItems: story.totalItems,
+  links: story.links,
+  entity: story.entity,
+  updateSuccess: story.updateSuccess
 });
 
 const mapDispatchToProps = {
@@ -176,4 +176,4 @@ type DispatchProps = typeof mapDispatchToProps;
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Item);
+)(Story);
