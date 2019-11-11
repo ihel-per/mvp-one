@@ -29,13 +29,13 @@ export class EditorConvertToHTML extends Component {
             separator: ' ',
             trigger: '#',
           }}
-          /*toolbar={{
+          toolbar={{
             inline: { inDropdown: true },
             list: { inDropdown: true },
             textAlign: { inDropdown: true },
             link: { inDropdown: true },
             history: { inDropdown: true },
-          }}*/
+          }}
         />
       </div>
     );
