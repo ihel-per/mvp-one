@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Row, Col, Label } from 'reactstrap';
@@ -14,6 +14,12 @@ import { IItem } from 'app/shared/model/item.model';
 import { convertDateTimeFromServer, convertDateTimeToServer } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
 
+import { EditorConvertToHTML } from '../../components/editor';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
+import { EditorState, convertToRaw } from 'draft-js';
+
 export interface IItemUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
 export interface IItemUpdateState {
@@ -26,7 +32,7 @@ export class ItemUpdate extends React.Component<IItemUpdateProps, IItemUpdateSta
     super(props);
     this.state = {
       ownerId: '0',
-      isNew: !this.props.match.params || !this.props.match.params.id
+      isNew: !this.props.match.params || !this.props.match.params.id,
     };
   }
 
@@ -120,14 +126,9 @@ export class ItemUpdate extends React.Component<IItemUpdateProps, IItemUpdateSta
                   <Label id="textLabel" for="item-text">
                     Text
                   </Label>
-                  <AvField
-                    id="item-text"
-                    type="text"
-                    name="text"
-                    validate={{
-                      required: { value: true, errorMessage: 'This field is required.' }
-                    }}
-                  />
+                  <div>
+                    <EditorConvertToHTML />
+                  </div>
                 </AvGroup>
                 <AvGroup>
                   <Label id="publishTimeLabel" for="item-publishTime">
