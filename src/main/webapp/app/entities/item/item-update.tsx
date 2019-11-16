@@ -84,13 +84,10 @@ export class ItemUpdate extends React.Component<IItemUpdateProps, IItemUpdateSta
     this.props.history.push('/entity/item');
   };
 
-
-
-  onEditorStateChange: Function = (editorState, itemEntity) => {
+  onEditorStateChange: Function = (editorState) => {
     this.setState({
       editorState
     });
-    itemEntity.text = convertToRaw(editorState.getCurrentContent()).blocks[0].text;
   };
 
   render() {
@@ -147,6 +144,18 @@ export class ItemUpdate extends React.Component<IItemUpdateProps, IItemUpdateSta
                       onEditorStateChange={this.onEditorStateChange}
                     />
                   </div>
+                  <AvField
+                    disabled
+                    id="item-text"
+                    type="text"
+                    name="text"
+                    value={draftToHtml(
+                      convertToRaw(this.state.editorState.getCurrentContent())
+                    )}
+                    validate={{
+                      required: { value: true, errorMessage: 'This field is required.' }
+                    }}
+                  />
                 </AvGroup>
                 <AvGroup>
                   <Label id="publishTimeLabel" for="item-publishTime">
