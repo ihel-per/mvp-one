@@ -14,25 +14,29 @@ import { IItem } from 'app/shared/model/item.model';
 import { convertDateTimeFromServer, convertDateTimeToServer } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
 
-import { EditorConvertToHTML } from '../../components/editor';
+import { EditorState, convertToRaw } from "draft-js";
+import { Editor } from "react-draft-wysiwyg";
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
-import { EditorState, convertToRaw } from 'draft-js';
+import item from "app/entities/item/item";
 
 export interface IItemUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
 export interface IItemUpdateState {
   isNew: boolean;
   ownerId: string;
+  editorState: EditorState;
 }
 
 export class ItemUpdate extends React.Component<IItemUpdateProps, IItemUpdateState> {
   constructor(props) {
     super(props);
+
     this.state = {
       ownerId: '0',
       isNew: !this.props.match.params || !this.props.match.params.id,
+      editorState: EditorState.createEmpty(),
     };
   }
 
@@ -78,6 +82,15 @@ export class ItemUpdate extends React.Component<IItemUpdateProps, IItemUpdateSta
 
   handleClose = () => {
     this.props.history.push('/entity/item');
+  };
+
+
+
+  onEditorStateChange: Function = (editorState, itemEntity) => {
+    this.setState({
+      editorState
+    });
+    itemEntity.text = convertToRaw(editorState.getCurrentContent()).blocks[0].text;
   };
 
   render() {
@@ -127,7 +140,12 @@ export class ItemUpdate extends React.Component<IItemUpdateProps, IItemUpdateSta
                     Text
                   </Label>
                   <div>
-                    <EditorConvertToHTML />
+                    <Editor
+                      editorState={this.state.editorState}
+                      wrapperClassName="demo-wrapper"
+                      editorClassName="demo-editor"
+                      onEditorStateChange={this.onEditorStateChange}
+                    />
                   </div>
                 </AvGroup>
                 <AvGroup>
