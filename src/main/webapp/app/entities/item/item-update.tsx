@@ -150,7 +150,8 @@ export class ItemUpdate extends React.Component<IItemUpdateProps, IItemUpdateSta
                     type="text"
                     name="text"
                     value={
-                      convertToRaw(this.state.editorState.getCurrentContent())
+                      // draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
+                      convertToRaw(this.state.editorState.getCurrentContent()).blocks[0].text
                     }
                     validate={{
                       required: { value: true, errorMessage: 'This field is required.' }
