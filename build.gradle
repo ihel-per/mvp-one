@@ -149,6 +149,13 @@ repositories {
 }
 
 dependencies {
+
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    //implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
+
+    compileOnly 'org.projectlombok:lombok:1.18.10'
+    annotationProcessor 'org.projectlombok:lombok:1.18.10'
+
     // import JHipster dependencies BOM
     implementation platform("io.github.jhipster:jhipster-dependencies:${jhipster_dependencies_version}" )
 

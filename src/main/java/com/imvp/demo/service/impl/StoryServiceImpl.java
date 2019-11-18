@@ -2,8 +2,11 @@ package com.imvp.demo.service.impl;
 
 import com.imvp.demo.domain.Story;
 import com.imvp.demo.repository.StoryRepository;
-import com.imvp.demo.service.StorySchedulerService;
+import com.imvp.demo.service.SchedulerService;
 import com.imvp.demo.service.StoryService;
+import com.imvp.demo.service.command.InstaPost;
+import com.imvp.demo.service.command.InstaPost.PostMimeType;
+import com.imvp.demo.service.command.InstaPost.PostType;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +23,11 @@ public class StoryServiceImpl implements StoryService {
     private final Logger log = LoggerFactory.getLogger(StoryServiceImpl.class);
 
     private final StoryRepository storyRepository;
-    private final StorySchedulerService storySchedulerService;
+    private final SchedulerService schedulerService;
 
-    public StoryServiceImpl(StoryRepository storyRepository, StorySchedulerService storySchedulerService) {
+    public StoryServiceImpl(StoryRepository storyRepository, SchedulerService schedulerService) {
         this.storyRepository = storyRepository;
-        this.storySchedulerService = storySchedulerService;
+        this.schedulerService = schedulerService;
     }
 
     /**
@@ -37,7 +40,10 @@ public class StoryServiceImpl implements StoryService {
     public Story save(Story story) {
         log.debug("Request to save Story : {}", story);
         Story save = storyRepository.save(story);
-        storySchedulerService.scheduleJob(save);
+
+        PostMimeType type = story.getContentContentType().contains("video") ? PostMimeType.VIDEO : PostMimeType.PHOTO;
+        schedulerService
+            .scheduleJob(new InstaPost(PostType.STORY, type, save.getId(), save.getPublishTime()));
 
         return save;
     }

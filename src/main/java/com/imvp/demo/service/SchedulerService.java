@@ -1,7 +1,7 @@
 package com.imvp.demo.service;
 
 
-import com.imvp.demo.domain.Story;
+import com.imvp.demo.service.command.InstaPost;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
@@ -18,22 +18,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class StorySchedulerService {
+public class SchedulerService {
 
-    private final Logger log = LoggerFactory.getLogger(StorySchedulerService.class);
+    private final Logger log = LoggerFactory.getLogger(SchedulerService.class);
 
     private final Scheduler scheduler;
 
-    public StorySchedulerService(Scheduler scheduler) {
+    public SchedulerService(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
-    public String scheduleJob(Story story) {
+    public String scheduleJob(InstaPost post) {
 
-        JobDetail jobDetail = buildJobDetail(Map.of(
-            "itemId", story.getId()
-        ));
-        Trigger trigger = buildJobTrigger(jobDetail, story.getPublishTime());
+        JobDetail jobDetail = buildJobDetail(Map.of("post", post));
+
+        Trigger trigger = buildJobTrigger(jobDetail, post.getPublishTime());
         try {
             Date date = scheduler.scheduleJob(jobDetail, trigger);
             log.info("PUBLISH TIME : {}", date);
@@ -48,19 +47,18 @@ public class StorySchedulerService {
         JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.putAll(params);
 
-        return JobBuilder.newJob(StoryJob.class)
-            .withIdentity("story-job", "story-jobs-group")
-            .withDescription("Publish story Job")
+        return JobBuilder.newJob(ScheduledJob.class)
+            .withIdentity("post-job", "post-jobs-group")
+            .withDescription("Publish post Job")
             .usingJobData(jobDataMap)
-            //.storeDurably()
             .build();
     }
 
     private Trigger buildJobTrigger(JobDetail jobDetail, Instant startAt) {
         return TriggerBuilder.newTrigger()
             .forJob(jobDetail)
-            .withIdentity(jobDetail.getKey().getName(), "story-triggers")
-            .withDescription("Publish story Trigger")
+            .withIdentity(jobDetail.getKey().getName(), "post-triggers")
+            .withDescription("Publish post Trigger")
             .startAt(Date.from(startAt))
             .withSchedule(SimpleScheduleBuilder.simpleSchedule().withMisfireHandlingInstructionFireNow())
             .build();
